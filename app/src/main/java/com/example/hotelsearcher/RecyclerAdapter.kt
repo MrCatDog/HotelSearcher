@@ -1,5 +1,6 @@
 package com.example.hotelsearcher
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,14 +28,15 @@ class RecyclerAdapter(private val listener: OnItemClickListener) :
         holder.binding.address.text = item.address
         holder.binding.distance.text = item.distanceToShow
         holder.binding.suitesAvailability.text = item.suitesToShow
-        holder.binding.root.setOnClickListener()
+        //holder.binding.root.setOnClickListener()
     }
 
     override fun getItemCount() = items.size
 
-    fun setData(items: List<BaseHotelInfo>, itemCount: Int) {
+    @SuppressLint("NotifyDataSetChanged") //all of them changed
+    fun setData(items: List<BaseHotelInfo>) {
         this.items = items
-        notifyItemRangeInserted(items.lastIndex, itemCount)
+        notifyDataSetChanged()
     }
 
     interface OnItemClickListener {

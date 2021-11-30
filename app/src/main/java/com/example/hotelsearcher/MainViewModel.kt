@@ -37,9 +37,22 @@ class MainViewModel : ViewModel() {
         loadHotels()
     }
 
-    fun loadHotels() {
+    private fun loadHotels() {
         dataReceiver.requestData(URL, this::onResponse, this::onFailure)
     }
+
+    fun sortBySuites() {
+        val hotels = _hotels.value
+        _hotels.value = hotels?.sortedByDescending { it.suites.size }
+    }
+
+    fun sortByDistance() {
+        //todo flag чтоб racing condition избежать
+        //todo вынести в новый поток
+        val hotels = _hotels.value
+        _hotels.value = hotels?.sortedBy { it.distance }
+    }
+
 
     private fun onFailure(call: Call, e: IOException) {
         if (!call.isCanceled()) {
@@ -55,44 +68,20 @@ class MainViewModel : ViewModel() {
                 val hotel = answer.getJSONObject(i)
                 hotels.add(
                     BaseHotelInfo(
-                        hotel.getString(COLLECTION_NAME),
-                        hotel.getString(ARTIST_NAME),
-                        hotel.getString(ARTWORK),
-                        hotel.getString(ID)
+                        id = hotel.getString(HOTEL_ID),
+                        name = hotel.getString(HOTEL_NAME),
+                        address = hotel.getString(HOTEL_ADDRESS),
+                        stars = hotel.getDouble(HOTEL_STARS).toFloat(),
+                        distance = hotel.getDouble(HOTEL_DISTANCE).toFloat(),
+                        suites = hotel.getString(HOTEL_SUITES).split(":") //todo trim ":"
                     )
                 )
             }
+            _hotels.postValue(hotels)
         } else {
-            _err.postValue()
+            _err.postValue(IOException())
         }
 
-        if (!response.isSuccessful) {
-            _err.postValue(IOException(response.message + response.code.toString()))
-        } else {
-
-            val count = answer.get(RESULT_COUNT_TAG) as Int
-            if (count == 0) {
-                _noResultEvent.postValue(Unit)
-                return
-            } else {
-                val jArray = answer.get(RESULT_TAG) as JSONArray
-                val albums = ArrayList<BaseAlbumInfo>()
-                var album: JSONObject
-                for (i in 0 until count) {
-                    album = jArray.getJSONObject(i)
-                    albums.add(
-                        BaseAlbumInfo(
-                            album.getString(COLLECTION_NAME),
-                            album.getString(ARTIST_NAME),
-                            album.getString(ARTWORK),
-                            album.getString(ID)
-                        )
-                    )
-                }
-                albums.sortBy { it.albumName.lowercase() }
-                _hotels.postValue(albums)
-            }
-        }
     }
 
 }

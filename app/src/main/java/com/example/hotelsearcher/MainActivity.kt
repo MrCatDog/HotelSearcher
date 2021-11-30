@@ -27,6 +27,10 @@ class MainActivity : AppCompatActivity(), RecyclerAdapter.OnItemClickListener {
         val adapter = RecyclerAdapter(this)
         binding.hotelList.adapter = adapter
 
+        viewModel.hotels.observe(this) {
+            adapter.setData(it)
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -49,9 +53,9 @@ class MainActivity : AppCompatActivity(), RecyclerAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
-        val intent = Intent(this, AlbumInfoActivity::class.java).apply {
-            putExtra(Shared.CLICKED_ITEM_ID, viewModel.getItemIDByPosition(position))
-        }
-        startForResult.launch(intent)
+//        val intent = Intent(this, AlbumInfoActivity::class.java).apply {
+//            putExtra(Shared.CLICKED_ITEM_ID, viewModel.getItemIDByPosition(position))
+//        }
+//        startForResult.launch(intent)
     }
 }

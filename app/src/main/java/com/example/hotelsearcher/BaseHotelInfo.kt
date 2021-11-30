@@ -1,6 +1,6 @@
 package com.example.hotelsearcher
 
-const val SUITES_SEPARATOR = ","
+const val SUITES_SEPARATOR = ", "
 
 data class BaseHotelInfo(
     val id: String,
@@ -8,7 +8,7 @@ data class BaseHotelInfo(
     val address: String,
     val stars: Float,
     val distance: Float,
-    val suites: ArrayList<String>
+    val suites: List<String>
 ) {
     val distanceToShow
         get() = distance.toString()

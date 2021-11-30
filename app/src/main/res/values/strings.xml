@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">Hotel Searcher</string>
     <string name="hotel_item_suites_availability_precurse">Available suites:</string>
-    <string name="hotel_item_distance_precurse">Distance from :</string>
+    <string name="hotel_item_distance_precurse">Distance from city centre:</string>
 </resources>
