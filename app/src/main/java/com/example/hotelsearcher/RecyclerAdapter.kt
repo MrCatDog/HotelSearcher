@@ -10,7 +10,7 @@ import java.util.ArrayList
 class RecyclerAdapter(private val listener: OnItemClickListener) :
     RecyclerView.Adapter<RecyclerAdapter.VH>() {
 
-    private var items: List<JokesModel.JokeItem> = ArrayList()
+    private var items: List<BaseHotelInfo> = ArrayList()
 
     class VH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding: HotelItemBinding = HotelItemBinding.bind(itemView)
@@ -22,13 +22,17 @@ class RecyclerAdapter(private val listener: OnItemClickListener) :
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = items[position]
-        holder.binding.stars.rating =
-
+        holder.binding.stars.rating = item.stars
+        holder.binding.name.text = item.name
+        holder.binding.address.text = item.address
+        holder.binding.distance.text = item.distanceToShow
+        holder.binding.suitesAvailability.text = item.suitesToShow
+        holder.binding.root.setOnClickListener()
     }
 
     override fun getItemCount() = items.size
 
-    fun setData(items: List<JokesModel.JokeItem>, itemCount: Int) {
+    fun setData(items: List<BaseHotelInfo>, itemCount: Int) {
         this.items = items
         notifyItemRangeInserted(items.lastIndex, itemCount)
     }
