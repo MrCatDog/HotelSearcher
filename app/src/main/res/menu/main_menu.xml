@@ -2,10 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_sort_by_distance"
-        android:title="Add">
-    </item>
+        android:title="@string/menu_item_sort_distance" />
+
     <item
         android:id="@+id/action_sort_by_suites"
-        android:title="Settings">
-    </item>
+        android:title="@string/menu_item_sort_suites" />
 </menu>

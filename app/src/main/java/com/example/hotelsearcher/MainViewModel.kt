@@ -11,6 +11,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.util.ArrayList
+import java.util.concurrent.atomic.AtomicBoolean
 
 const val URL = "https://raw.githubusercontent.com/iMofas/ios-android-test/master/0777.json"
 
@@ -21,6 +22,10 @@ const val HOTEL_DISTANCE = "distance"
 const val HOTEL_STARS = "stars"
 const val HOTEL_SUITES = "suites_availability"
 
+const val DELIMITER = ':'
+
+const val HTTP_OK = 200
+
 class MainViewModel : ViewModel() {
 
     private val dataReceiver = DataReceiver()
@@ -28,6 +33,8 @@ class MainViewModel : ViewModel() {
     private val _hotels = MutableLiveData<List<BaseHotelInfo>>()
     val hotels: LiveData<List<BaseHotelInfo>>
         get() = _hotels
+
+    val isItemListInUse = AtomicBoolean(false)
 
     private val _err = MutableLiveEvent<Exception>()
     val err: LiveData<Exception>
@@ -38,12 +45,16 @@ class MainViewModel : ViewModel() {
     }
 
     private fun loadHotels() {
-        dataReceiver.requestData(URL, this::onResponse, this::onFailure)
+        if(isItemListInUse.compareAndSet(false, true)) {
+            dataReceiver.requestData(URL, this::onResponse, this::onFailure)
+        }
     }
 
     fun sortBySuites() {
         val hotels = _hotels.value
-        _hotels.value = hotels?.sortedByDescending { it.suites.size }
+        if(isItemListInUse.compareAndSet(false, true)) {
+            _hotels.value = hotels?.sortedByDescending { it.suites.size }
+        }
     }
 
     fun sortByDistance() {
@@ -61,7 +72,7 @@ class MainViewModel : ViewModel() {
     }
 
     private fun onResponse(response: Response) {
-        if(response.code == 200) {
+        if (response.code == HTTP_OK) {
             val answer = JSONArray(response.body?.string() ?: throw IOException())
             val hotels = ArrayList<BaseHotelInfo>()
             for (i in 0 until answer.length()) {
@@ -73,15 +84,18 @@ class MainViewModel : ViewModel() {
                         address = hotel.getString(HOTEL_ADDRESS),
                         stars = hotel.getDouble(HOTEL_STARS).toFloat(),
                         distance = hotel.getDouble(HOTEL_DISTANCE).toFloat(),
-                        suites = hotel.getString(HOTEL_SUITES).split(":") //todo trim ":"
+                        suites = hotel.getString(HOTEL_SUITES).trim(DELIMITER).split(DELIMITER)
                     )
                 )
             }
             _hotels.postValue(hotels)
+            isItemListInUse.set(false)
         } else {
             _err.postValue(IOException())
         }
-
     }
 
+    fun getItemIDByPosition(position: Int) {
+
+    }
 }

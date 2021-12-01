@@ -2,4 +2,6 @@
     <string name="app_name">Hotel Searcher</string>
     <string name="hotel_item_suites_availability_precurse">Available suites:</string>
     <string name="hotel_item_distance_precurse">Distance from city centre:</string>
+    <string name="menu_item_sort_distance">Sort by distance</string>
+    <string name="menu_item_sort_suites">Sort by suites</string>
 </resources>

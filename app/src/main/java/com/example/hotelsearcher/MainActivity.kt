@@ -1,6 +1,5 @@
 package com.example.hotelsearcher
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -8,7 +7,6 @@ import com.example.albumsearcher.util.viewModelsExt
 import com.example.hotelsearcher.databinding.MainActivityBinding
 import android.view.Menu
 import android.view.MenuItem
-
 
 class MainActivity : AppCompatActivity(), RecyclerAdapter.OnItemClickListener {
 
