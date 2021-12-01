@@ -1,5 +1,6 @@
-package com.example.hotelsearcher
+package com.example.hotelsearcher.main
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -7,8 +8,11 @@ import com.example.albumsearcher.util.viewModelsExt
 import com.example.hotelsearcher.databinding.MainActivityBinding
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import com.example.hotelsearcher.AdditionalInfoActivity
+import com.example.hotelsearcher.R
 
-class MainActivity : AppCompatActivity(), RecyclerAdapter.OnItemClickListener {
+class MainActivity : AppCompatActivity() {
 
     lateinit var binding: MainActivityBinding
 
@@ -25,8 +29,30 @@ class MainActivity : AppCompatActivity(), RecyclerAdapter.OnItemClickListener {
         val adapter = RecyclerAdapter(this)
         binding.hotelList.adapter = adapter
 
+        binding.tryAgainBtn.setOnClickListener {
+            viewModel.tryAgainBtnClicked()
+        }
+
         viewModel.hotels.observe(this) {
             adapter.setData(it)
+        }
+
+        viewModel.isLoading.observe(this) {
+            if(it) {
+                binding.progressbar.visibility = View.VISIBLE
+                binding.hotelList.visibility = View.GONE
+                binding.tryAgainBtn.visibility = View.GONE
+            } else {
+                binding.progressbar.visibility = View.GONE
+                binding.hotelList.visibility = View.VISIBLE
+                binding.tryAgainBtn.visibility = View.GONE
+            }
+        }
+
+        viewModel.err.observe(this) {
+            binding.tryAgainBtn.visibility = View.VISIBLE
+            binding.progressbar.visibility = View.GONE
+            binding.hotelList.visibility = View.GONE
         }
 
     }
@@ -50,10 +76,10 @@ class MainActivity : AppCompatActivity(), RecyclerAdapter.OnItemClickListener {
         }
     }
 
-    override fun onItemClick(position: Int) {
-//        val intent = Intent(this, AlbumInfoActivity::class.java).apply {
-//            putExtra(Shared.CLICKED_ITEM_ID, viewModel.getItemIDByPosition(position))
-//        }
-//        startForResult.launch(intent)
+    fun onRecyclerItemClicked(id:String) {
+        val intent = Intent(this, AdditionalInfoActivity::class.java).apply {
+            putExtra("test", id)
+        }
+        startActivity(intent)
     }
 }

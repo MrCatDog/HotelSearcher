@@ -4,4 +4,8 @@
     <string name="hotel_item_distance_precurse">Distance from city centre:</string>
     <string name="menu_item_sort_distance">Sort by distance</string>
     <string name="menu_item_sort_suites">Sort by suites</string>
+    <string name="additional_info_longitude_precurse">Longitude:</string>
+    <string name="additional_info_latitude_precurse">Latitude:</string>
+    <string name="album_image_desc">Album cover</string>
+    <string name="main_try_again_btn_text">Try again</string>
 </resources>

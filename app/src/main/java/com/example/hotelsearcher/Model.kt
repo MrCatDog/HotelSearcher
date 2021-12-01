@@ -1,4 +1,4 @@
-package com.example.hotelsearcher
+package com.example.hotelsearcher.main
 
 const val SUITES_SEPARATOR = ", "
 
@@ -15,3 +15,5 @@ data class BaseHotelInfo(
     val suitesToShow
         get() = suites.joinToString(separator = SUITES_SEPARATOR)
 }
+
+data class FullHotelInfo(val base: BaseHotelInfo, val lon: String, val lat: String, val url: String)

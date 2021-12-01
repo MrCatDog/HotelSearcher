@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="hotel_item_padding">5dp</dimen>
+    <dimen name="additional_info_activity_margin">5dp</dimen>
+    <dimen name="additional_info_longitude_margin">5dp</dimen>
+    <dimen name="additional_info_latitude_margin">5dp</dimen>
 </resources>

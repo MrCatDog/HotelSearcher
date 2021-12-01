@@ -1,14 +1,15 @@
-package com.example.hotelsearcher
+package com.example.hotelsearcher.main
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.hotelsearcher.R
 import com.example.hotelsearcher.databinding.HotelItemBinding
 import java.util.ArrayList
 
-class RecyclerAdapter(private val listener: OnItemClickListener) :
+class RecyclerAdapter(private val listener: MainActivity) :
     RecyclerView.Adapter<RecyclerAdapter.VH>() {
 
     private var items: List<BaseHotelInfo> = ArrayList()
@@ -28,7 +29,9 @@ class RecyclerAdapter(private val listener: OnItemClickListener) :
         holder.binding.address.text = item.address
         holder.binding.distance.text = item.distanceToShow
         holder.binding.suitesAvailability.text = item.suitesToShow
-        //holder.binding.root.setOnClickListener()
+        holder.binding.root.setOnClickListener {
+            listener.onRecyclerItemClicked(item.id)
+        }
     }
 
     override fun getItemCount() = items.size
@@ -39,7 +42,4 @@ class RecyclerAdapter(private val listener: OnItemClickListener) :
         notifyDataSetChanged()
     }
 
-    interface OnItemClickListener {
-        fun onItemClick(position: Int)
-    }
 }

@@ -1,4 +1,4 @@
-package com.example.hotelsearcher
+package com.example.hotelsearcher.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -11,9 +11,9 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.util.ArrayList
-import java.util.concurrent.atomic.AtomicBoolean
 
 const val URL = "https://raw.githubusercontent.com/iMofas/ios-android-test/master/0777.json"
+
 
 const val HOTEL_ID = "id"
 const val HOTEL_NAME = "name"
@@ -34,7 +34,9 @@ class MainViewModel : ViewModel() {
     val hotels: LiveData<List<BaseHotelInfo>>
         get() = _hotels
 
-    val isItemListInUse = AtomicBoolean(false)
+    private val _isLoading = MutableLiveEvent<Boolean>()
+    val isLoading: LiveData<Boolean>
+        get() = _isLoading
 
     private val _err = MutableLiveEvent<Exception>()
     val err: LiveData<Exception>
@@ -45,16 +47,13 @@ class MainViewModel : ViewModel() {
     }
 
     private fun loadHotels() {
-        if(isItemListInUse.compareAndSet(false, true)) {
-            dataReceiver.requestData(URL, this::onResponse, this::onFailure)
-        }
+        _isLoading.setValue(true)
+        dataReceiver.requestData(URL, this::onMainResponse, this::onMainFailure)
     }
 
     fun sortBySuites() {
         val hotels = _hotels.value
-        if(isItemListInUse.compareAndSet(false, true)) {
-            _hotels.value = hotels?.sortedByDescending { it.suites.size }
-        }
+        _hotels.value = hotels?.sortedByDescending { it.suites.size }
     }
 
     fun sortByDistance() {
@@ -65,13 +64,13 @@ class MainViewModel : ViewModel() {
     }
 
 
-    private fun onFailure(call: Call, e: IOException) {
+    private fun onMainFailure(call: Call, e: IOException) {
         if (!call.isCanceled()) {
             _err.postValue(e)
         }
     }
 
-    private fun onResponse(response: Response) {
+    private fun onMainResponse(response: Response) {
         if (response.code == HTTP_OK) {
             val answer = JSONArray(response.body?.string() ?: throw IOException())
             val hotels = ArrayList<BaseHotelInfo>()
@@ -89,13 +88,13 @@ class MainViewModel : ViewModel() {
                 )
             }
             _hotels.postValue(hotels)
-            isItemListInUse.set(false)
+            _isLoading.postValue(false)
         } else {
             _err.postValue(IOException())
         }
     }
 
-    fun getItemIDByPosition(position: Int) {
-
+    fun tryAgainBtnClicked() {
+        loadHotels()
     }
 }
