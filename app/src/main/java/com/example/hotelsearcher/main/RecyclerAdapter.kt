@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.hotelsearcher.BaseHotelInfo
 import com.example.hotelsearcher.R
 import com.example.hotelsearcher.databinding.HotelItemBinding
 import java.util.ArrayList

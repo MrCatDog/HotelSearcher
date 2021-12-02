@@ -4,4 +4,5 @@
     <dimen name="additional_info_activity_margin">5dp</dimen>
     <dimen name="additional_info_longitude_margin">5dp</dimen>
     <dimen name="additional_info_latitude_margin">5dp</dimen>
+    <dimen name="additional_info_image_width">200dp</dimen>
 </resources>

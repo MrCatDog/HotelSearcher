@@ -8,7 +8,9 @@ import com.example.hotelsearcher.databinding.MainActivityBinding
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.constraintlayout.solver.state.State
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentContainerView
 import com.example.hotelsearcher.additional_info_activity.AdditionalInfoActivity
 import com.example.hotelsearcher.R
 import com.example.hotelsearcher.shared.Constants.ITEM_ID
@@ -28,20 +30,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val hotelsListFragment = HotelsListFragment()
-
         viewModel.isLoading.observe(this) {
-            if(it) {
-                changeFragment(ProgressFragment())
-            } else {
-                //changeFragment(hotelsListFragment)
-            }
-
+            changeFragment(ProgressFragment())
         }
-        //todo говно говна, совсем не хочется обновлять каждый раз
+
+        viewModel.showList.observe(this) {
+            changeFragment(HotelsListFragment())
+        }
+
         viewModel.hotels.observe(this) {
-            changeFragment(hotelsListFragment)
-            hotelsListFragment.setData(it)
+            val hotelsListFragment = supportFragmentManager.findFragmentById(binding.fragment.id)
+            if(hotelsListFragment is HotelsListFragment) {
+                hotelsListFragment.setData(it)
+            }
         }
 
         viewModel.err.observe(this) {

@@ -6,10 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.Target.SIZE_ORIGINAL
 import com.example.hotelsearcher.R
 import com.example.hotelsearcher.databinding.HotelFragmentBinding
-import com.example.hotelsearcher.main.FullHotelInfo
-import com.example.hotelsearcher.shared.Constants
+import com.example.hotelsearcher.FullHotelInfo
+import com.example.hotelsearcher.utils.CutOffBorderTransformation
+
+const val DATA_TAG = "data"
+const val BORDER_SIZE = 1
 
 class HotelFragment : Fragment() {
 
@@ -18,24 +22,25 @@ class HotelFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = HotelFragmentBinding.inflate(inflater)
-        val args = requireArguments()
+        val hotel : FullHotelInfo = requireArguments().getParcelable(DATA_TAG)!!
 
         Glide.with(this)
-            .load(args.getString(Constants.HOTEL_IMG))
-            //todo граница
+            .load(hotel.url)
+            .override(SIZE_ORIGINAL, SIZE_ORIGINAL)
+            .transform(CutOffBorderTransformation(BORDER_SIZE))
             .placeholder(R.drawable.hotel_default)
             .error(R.drawable.hotel_default)
             .into(binding.imageHolder)
 
-        args.apply {
-            binding.stars.rating = getFloat(Constants.HOTEL_STARS)
-            binding.name.text = getString(Constants.HOTEL_NAME)
-            binding.address.text = getString(Constants.HOTEL_ADDRESS)
-            binding.distance.text = getString(Constants.HOTEL_DISTANCE)
-            binding.suitesAvailability.text = getString(Constants.HOTEL_SUITES)
-            binding.longitude.text = getString(Constants.HOTEL_LAT)
-            binding.latitude.text = getString(Constants.HOTEL_LON)
-        }
+        hotel.apply {
+            binding.stars.rating = base.stars
+            binding.name.text = base.name
+            binding.address.text = base.address
+            binding.distance.text = base.distanceToShow
+            binding.suitesAvailability.text = base.suitesToShow
+            binding.longitude.text = lon
+            binding.latitude.text = lat
+        } //я не люблю DataBinding, но если надо сделал бы
 
         return binding.root
     }
@@ -45,14 +50,8 @@ class HotelFragment : Fragment() {
             val myFragment = HotelFragment()
             val args = Bundle()
 
-            args.putString(Constants.HOTEL_NAME, hotel.base.name) //мог бы и Parcelable сделать
-            args.putString(Constants.HOTEL_DISTANCE, hotel.base.distanceToShow)
-            args.putString(Constants.HOTEL_ADDRESS, hotel.base.address)
-            args.putString(Constants.HOTEL_SUITES, hotel.base.suitesToShow)
-            args.putFloat(Constants.HOTEL_STARS, hotel.base.stars)
-            args.putString(Constants.HOTEL_LAT, hotel.lat)
-            args.putString(Constants.HOTEL_LON, hotel.lon)
-            args.putString(Constants.HOTEL_IMG, hotel.url)
+            args.putParcelable(DATA_TAG, hotel)
+
             return myFragment.also { it.arguments = args }
         }
     }

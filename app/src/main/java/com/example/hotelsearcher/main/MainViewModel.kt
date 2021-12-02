@@ -3,6 +3,7 @@ package com.example.hotelsearcher.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.hotelsearcher.BaseHotelInfo
 import com.example.hotelsearcher.utils.MutableLiveEvent
 import com.example.hotelsearcher.shared.Constants
 import com.example.hotelsearcher.utils.DataReceiver
@@ -23,8 +24,12 @@ class MainViewModel : ViewModel() {
     val hotels: LiveData<List<BaseHotelInfo>>
         get() = _hotels
 
-    private val _isLoading = MutableLiveEvent<Boolean>()
-    val isLoading: LiveData<Boolean>
+    private val _showList = MutableLiveData<Unit>()
+    val showList: LiveData<Unit>
+        get() = _showList
+
+    private val _isLoading = MutableLiveEvent<Unit>()
+    val isLoading: LiveData<Unit>
         get() = _isLoading
 
     private val _err = MutableLiveEvent<String>()
@@ -36,7 +41,7 @@ class MainViewModel : ViewModel() {
     }
 
     private fun loadHotels() {
-        _isLoading.setValue(true)
+        _isLoading.setValue(Unit)
         dataReceiver.requestData(URL, this::onMainResponse, this::onMainFailure)
     }
 
@@ -76,7 +81,7 @@ class MainViewModel : ViewModel() {
                     )
                 )
             }
-            _isLoading.postValue(false)
+            _showList.postValue(Unit)
             _hotels.postValue(hotels)
         } else {
             _err.postValue(response.message)

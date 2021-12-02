@@ -5,10 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.hotelsearcher.additional_info_activity.HotelFragment
 import com.example.hotelsearcher.databinding.TryAgainFragmentBinding
-import com.example.hotelsearcher.main.FullHotelInfo
-import com.example.hotelsearcher.shared.Constants
 
 const val ERROR_MSG_TAG = "error"
 

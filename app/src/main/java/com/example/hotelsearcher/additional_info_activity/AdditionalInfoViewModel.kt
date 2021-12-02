@@ -3,8 +3,9 @@ package com.example.hotelsearcher.additional_info_activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.hotelsearcher.BaseHotelInfo
+import com.example.hotelsearcher.FullHotelInfo
 import com.example.hotelsearcher.utils.MutableLiveEvent
-import com.example.hotelsearcher.main.*
 import com.example.hotelsearcher.shared.Constants
 import com.example.hotelsearcher.utils.DataReceiver
 import okhttp3.Call
