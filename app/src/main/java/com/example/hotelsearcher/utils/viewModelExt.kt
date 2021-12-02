@@ -1,4 +1,4 @@
-package com.example.albumsearcher.util
+package com.example.hotelsearcher.utils
 
 import androidx.activity.ComponentActivity
 import androidx.activity.viewModels

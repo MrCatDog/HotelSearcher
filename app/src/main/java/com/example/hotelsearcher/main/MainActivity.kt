@@ -3,18 +3,21 @@ package com.example.hotelsearcher.main
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.albumsearcher.util.viewModelsExt
+import com.example.hotelsearcher.utils.viewModelsExt
 import com.example.hotelsearcher.databinding.MainActivityBinding
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.example.hotelsearcher.AdditionalInfoActivity
+import androidx.fragment.app.Fragment
+import com.example.hotelsearcher.additional_info_activity.AdditionalInfoActivity
 import com.example.hotelsearcher.R
+import com.example.hotelsearcher.shared.Constants.ITEM_ID
+import com.example.hotelsearcher.shared.fragment.ProgressFragment
+import com.example.hotelsearcher.shared.fragment.TryAgainFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
 
-    lateinit var binding: MainActivityBinding
+    private lateinit var binding: MainActivityBinding
 
     private val viewModel by viewModelsExt {
         MainViewModel()
@@ -25,36 +28,32 @@ class MainActivity : AppCompatActivity() {
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.hotelList.layoutManager = LinearLayoutManager(baseContext)
-        val adapter = RecyclerAdapter(this)
-        binding.hotelList.adapter = adapter
-
-        binding.tryAgainBtn.setOnClickListener {
-            viewModel.tryAgainBtnClicked()
-        }
-
-        viewModel.hotels.observe(this) {
-            adapter.setData(it)
-        }
+        val hotelsListFragment = HotelsListFragment()
 
         viewModel.isLoading.observe(this) {
             if(it) {
-                binding.progressbar.visibility = View.VISIBLE
-                binding.hotelList.visibility = View.GONE
-                binding.tryAgainBtn.visibility = View.GONE
+                changeFragment(ProgressFragment())
             } else {
-                binding.progressbar.visibility = View.GONE
-                binding.hotelList.visibility = View.VISIBLE
-                binding.tryAgainBtn.visibility = View.GONE
+                //changeFragment(hotelsListFragment)
             }
+
+        }
+        //todo говно говна, совсем не хочется обновлять каждый раз
+        viewModel.hotels.observe(this) {
+            changeFragment(hotelsListFragment)
+            hotelsListFragment.setData(it)
         }
 
         viewModel.err.observe(this) {
-            binding.tryAgainBtn.visibility = View.VISIBLE
-            binding.progressbar.visibility = View.GONE
-            binding.hotelList.visibility = View.GONE
+            changeFragment(TryAgainFragment.newInstance(it))
         }
 
+    }
+
+    private fun changeFragment(newFragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fragment.id, newFragment)
+            .commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -78,8 +77,12 @@ class MainActivity : AppCompatActivity() {
 
     fun onRecyclerItemClicked(id:String) {
         val intent = Intent(this, AdditionalInfoActivity::class.java).apply {
-            putExtra("test", id)
+            putExtra(ITEM_ID, id)
         }
         startActivity(intent)
+    }
+
+    override fun onClick(v: View?) {
+        viewModel.tryAgainBtnClicked()
     }
 }

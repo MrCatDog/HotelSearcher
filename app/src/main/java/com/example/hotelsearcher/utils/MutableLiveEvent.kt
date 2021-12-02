@@ -1,4 +1,4 @@
-package com.example.albumsearcher.util
+package com.example.hotelsearcher.utils
 
 import android.util.Log
 import androidx.annotation.MainThread

@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AdditionalInfoActivity"
+        <activity android:name=".additional_info_activity.AdditionalInfoActivity"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

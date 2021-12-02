@@ -1,4 +1,4 @@
-package com.example.hotelsearcher
+package com.example.hotelsearcher.shared.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

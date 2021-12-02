@@ -9,7 +9,7 @@ import com.example.hotelsearcher.R
 import com.example.hotelsearcher.databinding.HotelItemBinding
 import java.util.ArrayList
 
-class RecyclerAdapter(private val listener: MainActivity) :
+class RecyclerAdapter(private val listener: HotelsListFragment) :
     RecyclerView.Adapter<RecyclerAdapter.VH>() {
 
     private var items: List<BaseHotelInfo> = ArrayList()
