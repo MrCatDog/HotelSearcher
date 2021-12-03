@@ -1,23 +1,26 @@
 package com.example.hotelsearcher.main
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.hotelsearcher.BaseHotelInfo
+import com.example.hotelsearcher.main.fragments.hotels_list.BaseHotelInfo
 import com.example.hotelsearcher.utils.MutableLiveEvent
-import com.example.hotelsearcher.shared.Constants
-import com.example.hotelsearcher.utils.DataReceiver
-import okhttp3.Call
-import okhttp3.Response
-import org.json.JSONArray
-import java.io.IOException
-import java.net.HttpURLConnection.HTTP_OK
-import java.util.ArrayList
-
-
 
 class MainViewModel : ViewModel() {
 
+    private val _hotelsListEvent = MutableLiveEvent<Unit>()
+    val hotelsListEvent: LiveData<Unit>
+        get() = _hotelsListEvent
 
+    private val _hotelItemEvent = MutableLiveEvent<BaseHotelInfo>()
+    val hotelItemEvent: LiveData<BaseHotelInfo>
+        get() = _hotelItemEvent
+
+    init {
+        _hotelsListEvent.setValue(Unit)
+    }
+
+    fun setHotelFragment(hotel: BaseHotelInfo) {
+        _hotelItemEvent.setValue(hotel)
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.example.hotelsearcher
+package com.example.hotelsearcher.main.fragments.hotels_list
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
@@ -19,11 +19,3 @@ data class BaseHotelInfo(
     val suitesToShow
         get() = suites.joinToString(separator = SUITES_SEPARATOR)
 }
-
-@Parcelize
-data class FullHotelInfo(
-    val base: BaseHotelInfo,
-    val lon: String,
-    val lat: String,
-    val url: String
-) : Parcelable

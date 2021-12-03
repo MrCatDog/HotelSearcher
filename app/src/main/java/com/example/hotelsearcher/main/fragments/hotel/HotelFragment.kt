@@ -1,4 +1,4 @@
-package com.example.hotelsearcher.additional_info_activity
+package com.example.hotelsearcher.main.fragments.hotel
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,8 @@ import com.example.hotelsearcher.R
 import com.example.hotelsearcher.databinding.HotelFragmentBinding
 import com.example.hotelsearcher.utils.CutOffBorderTransformation
 import com.example.hotelsearcher.utils.viewModelsExt
+import com.example.hotelsearcher.main.fragments.hotel.HotelViewModel.Visibility.*
+import com.example.hotelsearcher.main.fragments.hotels_list.BaseHotelInfo
 
 const val DATA_TAG = "data"
 const val BORDER_SIZE = 1
@@ -18,7 +20,7 @@ const val BORDER_SIZE = 1
 class HotelFragment : Fragment() {
 
     private val viewModel by viewModelsExt {
-        HotelViewModel(requireArguments().getString(DATA_TAG)!!)
+        HotelViewModel(requireArguments().getParcelable<BaseHotelInfo>(DATA_TAG)!!)
     }
 
     override fun onCreateView(
@@ -48,23 +50,30 @@ class HotelFragment : Fragment() {
         }
 
         viewModel.err.observe(viewLifecycleOwner) {
-            binding.progressbar.visibility = View.GONE
-            binding.groupError.visibility = View.VISIBLE
             binding.errorText.text = it
         }
 
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.progressbar.visibility = View.VISIBLE
-                binding.groupHotel.visibility = View.GONE
-            } else {
-                binding.progressbar.visibility = View.GONE
-                binding.groupHotel.visibility = View.VISIBLE
+        viewModel.visibility.observe(viewLifecycleOwner) {
+            when (it) {
+                LOADING -> binding.apply {
+                    progressbar.visibility = View.VISIBLE
+                    groupError.visibility = View.GONE
+                    groupHotel.visibility = View.GONE
+                }
+                HOTEL -> binding.apply {
+                    progressbar.visibility = View.GONE
+                    groupError.visibility = View.GONE
+                    groupHotel.visibility = View.VISIBLE
+                }
+                else -> binding.apply {
+                    progressbar.visibility = View.GONE
+                    groupError.visibility = View.VISIBLE
+                    groupHotel.visibility = View.GONE
+                }
             }
         }
 
         binding.tryAgainBtn.setOnClickListener {
-            binding.groupError.visibility = View.GONE
             viewModel.tryAgainBtnClicked()
         }
 
@@ -72,11 +81,11 @@ class HotelFragment : Fragment() {
     }
 
     companion object HotelFragmentFactory {
-        fun newInstance(hotelID: String): HotelFragment {
+        fun newInstance(hotel: BaseHotelInfo): HotelFragment {
             val myFragment = HotelFragment()
             val args = Bundle()
 
-            args.putString(DATA_TAG, hotelID)
+            args.putParcelable(DATA_TAG, hotel)
 
             return myFragment.also { it.arguments = args }
         }

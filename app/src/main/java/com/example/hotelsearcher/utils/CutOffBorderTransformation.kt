@@ -22,14 +22,15 @@ class CutOffBorderTransformation(val borderSizeInPx: Int) : BitmapTransformation
         toTransform,
         borderSizeInPx,
         borderSizeInPx,
-        toTransform.width - borderSizeInPx*2,
-        toTransform.height - borderSizeInPx*2
+        toTransform.width - borderSizeInPx * 2,
+        toTransform.height - borderSizeInPx * 2
     )
 
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {
         messageDigest.update(idBytes.readBytes())
 
-        val borderSizeInPxByte: ByteArray = ByteBuffer.allocate(Int.SIZE_BYTES).putInt(borderSizeInPx).array()
+        val borderSizeInPxByte: ByteArray =
+            ByteBuffer.allocate(Int.SIZE_BYTES).putInt(borderSizeInPx).array()
         messageDigest.update(borderSizeInPxByte)
 
     }

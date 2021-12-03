@@ -1,13 +1,14 @@
-package com.example.hotelsearcher.main
+package com.example.hotelsearcher.main.fragments.hotels_list.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.hotelsearcher.BaseHotelInfo
 import com.example.hotelsearcher.R
 import com.example.hotelsearcher.databinding.HotelItemBinding
+import com.example.hotelsearcher.main.fragments.hotels_list.BaseHotelInfo
+import com.example.hotelsearcher.main.fragments.hotels_list.HotelsListFragment
 import java.util.ArrayList
 
 class RecyclerAdapter(private val listener: HotelsListFragment) :
@@ -31,7 +32,7 @@ class RecyclerAdapter(private val listener: HotelsListFragment) :
         holder.binding.distance.text = item.distanceToShow
         holder.binding.suitesAvailability.text = item.suitesToShow
         holder.binding.root.setOnClickListener {
-            listener.onRecyclerItemClicked(item.id)
+            listener.onRecyclerItemClicked(item)
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.hotelsearcher.main
+package com.example.hotelsearcher.main.fragments.hotels_list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hotelsearcher.databinding.HotelsListFragmentBinding
+import com.example.hotelsearcher.main.MainActivity
+import com.example.hotelsearcher.main.fragments.hotels_list.adapters.RecyclerAdapter
 import com.example.hotelsearcher.utils.viewModelsExt
+import com.example.hotelsearcher.main.fragments.hotels_list.HotelsListViewModel.Visibility.*
 
 class HotelsListFragment : Fragment() {
 
@@ -31,23 +34,30 @@ class HotelsListFragment : Fragment() {
         }
 
         viewModel.err.observe(viewLifecycleOwner) {
-            binding.progressbar.visibility = View.GONE
-            binding.groupError.visibility = View.VISIBLE
             binding.errorText.text = it
         }
 
-        viewModel.isLoading.observe(viewLifecycleOwner) {
-            if (it) {
-                binding.progressbar.visibility = View.VISIBLE
-                binding.groupHotels.visibility = View.GONE
-            } else {
-                binding.progressbar.visibility = View.GONE
-                binding.groupHotels.visibility = View.VISIBLE
+        viewModel.visibility.observe(viewLifecycleOwner) {
+            when (it) {
+                LOADING -> binding.apply {
+                    progressbar.visibility = View.VISIBLE
+                    groupError.visibility = View.GONE
+                    groupHotels.visibility = View.GONE
+                }
+                HOTELS -> binding.apply {
+                    progressbar.visibility = View.GONE
+                    groupError.visibility = View.GONE
+                    groupHotels.visibility = View.VISIBLE
+                }
+                else -> binding.apply {
+                    progressbar.visibility = View.GONE
+                    groupError.visibility = View.VISIBLE
+                    groupHotels.visibility = View.GONE
+                }
             }
         }
 
         binding.tryAgainBtn.setOnClickListener {
-            binding.groupError.visibility = View.GONE
             viewModel.tryAgainBtnClicked()
         }
 
@@ -62,10 +72,7 @@ class HotelsListFragment : Fragment() {
         return binding.root
     }
 
-    fun onRecyclerItemClicked(id: String) {
-        (requireActivity() as MainActivity).setHotelFragment(id)
+    fun onRecyclerItemClicked(hotel: BaseHotelInfo) {
+        (requireActivity() as MainActivity).setHotelFragment(hotel)
     }
-
-
-
 }

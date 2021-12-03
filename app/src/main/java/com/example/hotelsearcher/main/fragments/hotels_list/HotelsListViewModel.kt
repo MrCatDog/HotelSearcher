@@ -1,12 +1,9 @@
-package com.example.hotelsearcher.main
+package com.example.hotelsearcher.main.fragments.hotels_list
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.hotelsearcher.BaseHotelInfo
-import com.example.hotelsearcher.shared.Constants
 import com.example.hotelsearcher.utils.DataReceiver
-import com.example.hotelsearcher.utils.MutableLiveEvent
 import okhttp3.Call
 import okhttp3.Response
 import org.json.JSONArray
@@ -16,7 +13,22 @@ import java.util.ArrayList
 
 const val URL = "https://raw.githubusercontent.com/iMofas/ios-android-test/master/0777.json"
 
+const val HOTEL_ID = "id"
+const val HOTEL_NAME = "name"
+const val HOTEL_ADDRESS = "address"
+const val HOTEL_DISTANCE = "distance"
+const val HOTEL_STARS = "stars"
+const val HOTEL_SUITES = "suites_availability"
+
+const val DELIMITER = ':'
+
 class HotelsListViewModel : ViewModel() {
+
+    enum class Visibility {
+        HOTELS,
+        ERROR,
+        LOADING
+    }
 
     private val dataReceiver = DataReceiver()
 
@@ -24,21 +36,20 @@ class HotelsListViewModel : ViewModel() {
     val hotels: LiveData<List<BaseHotelInfo>>
         get() = _hotels
 
-    private val _isLoading = MutableLiveEvent<Boolean>()
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
+    private val _visibility = MutableLiveData<Visibility>()
+    val visibility: LiveData<Visibility>
+        get() = _visibility
 
-    private val _err = MutableLiveEvent<String>()
+    private val _err = MutableLiveData<String>()
     val err: LiveData<String>
         get() = _err
-
 
     init {
         loadHotels()
     }
 
     private fun loadHotels() {
-        _isLoading.setValue(true)
+        _visibility.value = Visibility.LOADING
         dataReceiver.requestData(URL, this::onMainResponse, this::onMainFailure)
     }
 
@@ -55,6 +66,7 @@ class HotelsListViewModel : ViewModel() {
     private fun onMainFailure(call: Call, e: IOException) {
         if (!call.isCanceled()) {
             _err.postValue(e.message)
+            _visibility.postValue(Visibility.ERROR)
         }
     }
 
@@ -66,20 +78,21 @@ class HotelsListViewModel : ViewModel() {
                 val hotel = answer.getJSONObject(i)
                 hotels.add(
                     BaseHotelInfo(
-                        id = hotel.getString(Constants.HOTEL_ID),
-                        name = hotel.getString(Constants.HOTEL_NAME),
-                        address = hotel.getString(Constants.HOTEL_ADDRESS),
-                        stars = hotel.getDouble(Constants.HOTEL_STARS).toFloat(),
-                        distance = hotel.getDouble(Constants.HOTEL_DISTANCE).toFloat(),
-                        suites = hotel.getString(Constants.HOTEL_SUITES)
-                            .trim(Constants.DELIMITER)
-                            .split(Constants.DELIMITER)
+                        id = hotel.getString(HOTEL_ID),
+                        name = hotel.getString(HOTEL_NAME),
+                        address = hotel.getString(HOTEL_ADDRESS),
+                        stars = hotel.getDouble(HOTEL_STARS).toFloat(),
+                        distance = hotel.getDouble(HOTEL_DISTANCE).toFloat(),
+                        suites = hotel.getString(HOTEL_SUITES)
+                            .trim(DELIMITER)
+                            .split(DELIMITER)
                     )
                 )
             }
-            _isLoading.postValue(false)
+            _visibility.postValue(Visibility.HOTELS)
             _hotels.postValue(hotels)
         } else {
+            _visibility.postValue(Visibility.ERROR)
             _err.postValue(response.message)
         }
     }

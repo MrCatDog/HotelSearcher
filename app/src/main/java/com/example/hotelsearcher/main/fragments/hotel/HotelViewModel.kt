@@ -1,13 +1,10 @@
-package com.example.hotelsearcher.additional_info_activity
+package com.example.hotelsearcher.main.fragments.hotel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.hotelsearcher.BaseHotelInfo
-import com.example.hotelsearcher.FullHotelInfo
-import com.example.hotelsearcher.shared.Constants
+import com.example.hotelsearcher.main.fragments.hotels_list.BaseHotelInfo
 import com.example.hotelsearcher.utils.DataReceiver
-import com.example.hotelsearcher.utils.MutableLiveEvent
 import okhttp3.Call
 import okhttp3.Response
 import org.json.JSONObject
@@ -16,10 +13,19 @@ import java.net.HttpURLConnection
 
 const val URL_HOTEL = "https://raw.githubusercontent.com/iMofas/ios-android-test/master/"
 const val URL_HOTEL_ENDING = ".json"
-
 const val URL_IMG = "https://github.com/iMofas/ios-android-test/raw/master/"
 
-class HotelViewModel(private val hotelId:String) : ViewModel() {
+const val HOTEL_IMG = "image"
+const val HOTEL_LAT = "lat"
+const val HOTEL_LON = "lon"
+
+class HotelViewModel(private val baseHotelInfo: BaseHotelInfo) : ViewModel() {
+
+    enum class Visibility {
+        HOTEL,
+        ERROR,
+        LOADING
+    }
 
     private val dataReceiver = DataReceiver()
 
@@ -27,22 +33,22 @@ class HotelViewModel(private val hotelId:String) : ViewModel() {
     val hotel: LiveData<FullHotelInfo>
         get() = _hotel
 
-    private val _isLoading = MutableLiveEvent<Boolean>()
-    val isLoading: LiveData<Boolean>
-        get() = _isLoading
-
-    private val _err = MutableLiveEvent<String>()
+    private val _err = MutableLiveData<String>()
     val err: LiveData<String>
         get() = _err
+
+    private val _visibility = MutableLiveData<Visibility>()
+    val visibility: LiveData<Visibility>
+        get() = _visibility
 
     init {
         loadHotel()
     }
 
     private fun loadHotel() {
-        _isLoading.setValue(true)
+        _visibility.value = Visibility.LOADING
         dataReceiver.requestData(
-            URL_HOTEL + hotelId + URL_HOTEL_ENDING,
+            URL_HOTEL + baseHotelInfo.id + URL_HOTEL_ENDING,
             this::onHotelResponse,
             this::onHotelFailure
         )
@@ -54,23 +60,15 @@ class HotelViewModel(private val hotelId:String) : ViewModel() {
 
             _hotel.postValue(
                 FullHotelInfo(
-                    base = BaseHotelInfo(
-                        id = answer.getString(Constants.HOTEL_ID),
-                        name = answer.getString(Constants.HOTEL_NAME),
-                        address = answer.getString(Constants.HOTEL_ADDRESS),
-                        stars = answer.getDouble(Constants.HOTEL_STARS).toFloat(),
-                        distance = answer.getDouble(Constants.HOTEL_DISTANCE).toFloat(),
-                        suites = answer.getString(Constants.HOTEL_SUITES)
-                            .trim(Constants.DELIMITER)
-                            .split(Constants.DELIMITER)
-                    ),
-                    lon = answer.getString(Constants.HOTEL_LON),
-                    lat = answer.getString(Constants.HOTEL_LAT),
-                    url = URL_IMG + answer.getString(Constants.HOTEL_IMG)
+                    baseHotelInfo,
+                    lon = answer.getString(HOTEL_LON),
+                    lat = answer.getString(HOTEL_LAT),
+                    url = URL_IMG + answer.getString(HOTEL_IMG)
                 )
             )
-            _isLoading.postValue(false)
+            _visibility.postValue(Visibility.HOTEL)
         } else {
+            _visibility.postValue(Visibility.ERROR)
             _err.postValue(response.message)
         }
     }
@@ -78,6 +76,7 @@ class HotelViewModel(private val hotelId:String) : ViewModel() {
     private fun onHotelFailure(call: Call, e: IOException) {
         if (!call.isCanceled()) {
             _err.postValue(e.message)
+            _visibility.postValue(Visibility.ERROR)
         }
     }
 
