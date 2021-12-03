@@ -5,21 +5,21 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.hotelsearcher.BaseHotelInfo
 import com.example.hotelsearcher.FullHotelInfo
-import com.example.hotelsearcher.utils.MutableLiveEvent
 import com.example.hotelsearcher.shared.Constants
 import com.example.hotelsearcher.utils.DataReceiver
+import com.example.hotelsearcher.utils.MutableLiveEvent
 import okhttp3.Call
 import okhttp3.Response
 import org.json.JSONObject
 import java.io.IOException
-import java.net.HttpURLConnection.HTTP_OK
+import java.net.HttpURLConnection
 
 const val URL_HOTEL = "https://raw.githubusercontent.com/iMofas/ios-android-test/master/"
 const val URL_HOTEL_ENDING = ".json"
 
 const val URL_IMG = "https://github.com/iMofas/ios-android-test/raw/master/"
 
-class AdditionalInfoViewModel(private val itemId: String) : ViewModel() {
+class HotelViewModel(private val hotelId:String) : ViewModel() {
 
     private val dataReceiver = DataReceiver()
 
@@ -27,8 +27,8 @@ class AdditionalInfoViewModel(private val itemId: String) : ViewModel() {
     val hotel: LiveData<FullHotelInfo>
         get() = _hotel
 
-    private val _isLoading = MutableLiveEvent<Unit>()
-    val isLoading: LiveData<Unit>
+    private val _isLoading = MutableLiveEvent<Boolean>()
+    val isLoading: LiveData<Boolean>
         get() = _isLoading
 
     private val _err = MutableLiveEvent<String>()
@@ -40,16 +40,16 @@ class AdditionalInfoViewModel(private val itemId: String) : ViewModel() {
     }
 
     private fun loadHotel() {
-        _isLoading.setValue(Unit)
+        _isLoading.setValue(true)
         dataReceiver.requestData(
-            URL_HOTEL + itemId + URL_HOTEL_ENDING,
+            URL_HOTEL + hotelId + URL_HOTEL_ENDING,
             this::onHotelResponse,
             this::onHotelFailure
         )
     }
 
     private fun onHotelResponse(response: Response) {
-        if (response.code == HTTP_OK) {
+        if (response.code == HttpURLConnection.HTTP_OK) {
             val answer = JSONObject(response.body!!.string())
 
             _hotel.postValue(
@@ -69,6 +69,7 @@ class AdditionalInfoViewModel(private val itemId: String) : ViewModel() {
                     url = URL_IMG + answer.getString(Constants.HOTEL_IMG)
                 )
             )
+            _isLoading.postValue(false)
         } else {
             _err.postValue(response.message)
         }
@@ -83,4 +84,5 @@ class AdditionalInfoViewModel(private val itemId: String) : ViewModel() {
     fun tryAgainBtnClicked() {
         loadHotel()
     }
+
 }
