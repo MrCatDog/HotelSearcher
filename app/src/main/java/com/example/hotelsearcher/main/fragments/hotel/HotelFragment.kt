@@ -20,7 +20,7 @@ const val BORDER_SIZE = 1
 class HotelFragment : Fragment() {
 
     private val viewModel by viewModelsExt {
-        HotelViewModel(requireArguments().getParcelable<BaseHotelInfo>(DATA_TAG)!!)
+        HotelViewModel(requireArguments().getParcelable(DATA_TAG)!!)
     }
 
     override fun onCreateView(
