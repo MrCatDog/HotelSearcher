@@ -6,7 +6,6 @@ import com.example.hotelsearcher.utils.viewModelsExt
 import com.example.hotelsearcher.databinding.MainActivityBinding
 import androidx.fragment.app.Fragment
 import com.example.hotelsearcher.main.fragments.hotel.HotelFragment
-import com.example.hotelsearcher.main.fragments.hotels_list.BaseHotelInfo
 import com.example.hotelsearcher.main.fragments.hotels_list.HotelsListFragment
 
 class MainActivity : AppCompatActivity() {

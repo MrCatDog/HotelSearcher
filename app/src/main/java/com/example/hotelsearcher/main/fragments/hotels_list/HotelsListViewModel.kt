@@ -41,7 +41,8 @@ class HotelsListViewModel : ViewModel() {
 
     fun sortBySuites() {
         val hotels = _hotels.value
-        _hotels.value = hotels?.sortedByDescending { it.suitesList.size } ?: ArrayList<BaseHotelInfo>()
+        _hotels.value =
+            hotels?.sortedByDescending { it.suitesList.size } ?: ArrayList<BaseHotelInfo>()
     }
 
     fun sortByDistance() {
@@ -58,7 +59,6 @@ class HotelsListViewModel : ViewModel() {
 
     private fun onMainResponse(response: Response<List<BaseHotelInfo>>) {
         if (response.isSuccessful) {
-            //todo если ответ 4хх?
             _visibility.postValue(Visibility.HOTELS)
             _hotels.postValue(response.body())
         } else {
