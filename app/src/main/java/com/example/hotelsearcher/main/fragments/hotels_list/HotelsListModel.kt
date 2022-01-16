@@ -1,21 +1,23 @@
 package com.example.hotelsearcher.main.fragments.hotels_list
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.google.gson.annotations.SerializedName
 
 const val SUITES_SEPARATOR = ", "
+const val DELIMITER = ':'
 
-@Parcelize
 data class BaseHotelInfo(
     val id: String,
     val name: String,
     val address: String,
     val stars: Float,
     val distance: Float,
-    val suites: List<String>
-) : Parcelable {
+    @SerializedName("suites_availability")
+    val suites: String
+) {
     val distanceToShow
         get() = distance.toString()
+    val suitesList
+        get() = suites.trim(DELIMITER).split(DELIMITER)
     val suitesToShow
-        get() = suites.joinToString(separator = SUITES_SEPARATOR)
+        get() = suitesList.joinToString(separator = SUITES_SEPARATOR)
 }

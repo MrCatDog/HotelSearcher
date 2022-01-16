@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         fTrans.commit()
     }
 
-    fun setHotelFragment(hotel: BaseHotelInfo) {
-        viewModel.setHotelFragment(hotel)
+    fun setHotelFragment(hotelID: String) {
+        viewModel.setHotelFragment(hotelID)
     }
 }

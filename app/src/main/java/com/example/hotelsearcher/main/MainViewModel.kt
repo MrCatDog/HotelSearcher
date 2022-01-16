@@ -11,16 +11,16 @@ class MainViewModel : ViewModel() {
     val hotelsListEvent: LiveData<Unit>
         get() = _hotelsListEvent
 
-    private val _hotelItemEvent = MutableLiveEvent<BaseHotelInfo>()
-    val hotelItemEvent: LiveData<BaseHotelInfo>
+    private val _hotelItemEvent = MutableLiveEvent<String>()
+    val hotelItemEvent: LiveData<String>
         get() = _hotelItemEvent
 
     init {
         _hotelsListEvent.setValue(Unit)
     }
 
-    fun setHotelFragment(hotel: BaseHotelInfo) {
-        _hotelItemEvent.setValue(hotel)
+    fun setHotelFragment(hotelID: String) {
+        _hotelItemEvent.setValue(hotelID)
     }
 
 }

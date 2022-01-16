@@ -20,7 +20,7 @@ const val BORDER_SIZE = 1
 class HotelFragment : Fragment() {
 
     private val viewModel by viewModelsExt {
-        HotelViewModel(requireArguments().getParcelable(DATA_TAG)!!)
+        HotelViewModel(requireArguments().getString(DATA_TAG)!!)
     }
 
     override fun onCreateView(
@@ -31,7 +31,7 @@ class HotelFragment : Fragment() {
 
         viewModel.hotel.observe(viewLifecycleOwner) {
             Glide.with(this)
-                .load(it.url)
+                .load(it.imgUrl)
                 .override(SIZE_ORIGINAL, SIZE_ORIGINAL)
                 .transform(CutOffBorderTransformation(BORDER_SIZE))
                 .placeholder(R.drawable.hotel_default)
@@ -39,11 +39,11 @@ class HotelFragment : Fragment() {
                 .into(binding.imageHolder)
 
             it.apply {
-                binding.stars.rating = base.stars
-                binding.name.text = base.name
-                binding.address.text = base.address
-                binding.distance.text = base.distanceToShow
-                binding.suitesAvailability.text = base.suitesToShow
+                binding.stars.rating = stars
+                binding.name.text = name
+                binding.address.text = address
+                binding.distance.text = distanceToShow
+                binding.suitesAvailability.text = suitesToShow
                 binding.longitude.text = lon
                 binding.latitude.text = lat
             }
@@ -81,11 +81,11 @@ class HotelFragment : Fragment() {
     }
 
     companion object HotelFragmentFactory {
-        fun newInstance(hotel: BaseHotelInfo): HotelFragment {
+        fun newInstance(hotelID: String): HotelFragment {
             val myFragment = HotelFragment()
             val args = Bundle()
 
-            args.putParcelable(DATA_TAG, hotel)
+            args.putString(DATA_TAG, hotelID)
 
             return myFragment.also { it.arguments = args }
         }

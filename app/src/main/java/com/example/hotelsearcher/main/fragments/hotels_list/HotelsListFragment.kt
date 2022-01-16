@@ -72,7 +72,7 @@ class HotelsListFragment : Fragment() {
         return binding.root
     }
 
-    fun onRecyclerItemClicked(hotel: BaseHotelInfo) {
-        (requireActivity() as MainActivity).setHotelFragment(hotel)
+    fun onRecyclerItemClicked(hotelID: String) {
+        (requireActivity() as MainActivity).setHotelFragment(hotelID)
     }
 }
