@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.hotelsearcher.utils.network.DataReceiver
+import com.example.hotelsearcher.utils.network.HotelsListResponse
 import retrofit2.Call
 import retrofit2.Response
 import java.util.ArrayList
@@ -42,7 +43,7 @@ class HotelsListViewModel : ViewModel() {
     fun sortBySuites() {
         val hotels = _hotels.value
         _hotels.value =
-            hotels?.sortedByDescending { it.suitesList.size } ?: ArrayList<BaseHotelInfo>()
+            hotels?.sortedByDescending { it.suites.size } ?: ArrayList<BaseHotelInfo>()
     }
 
     fun sortByDistance() {
@@ -50,17 +51,27 @@ class HotelsListViewModel : ViewModel() {
         _hotels.value = hotels?.sortedBy { it.distance } ?: ArrayList<BaseHotelInfo>()
     }
 
-    private fun onMainFailure(call: Call<List<BaseHotelInfo>>, e: Throwable) {
+    private fun onMainFailure(call: Call<List<HotelsListResponse>>, e: Throwable) {
         if (!call.isCanceled) {
             _err.postValue(e.message)
             _visibility.postValue(Visibility.ERROR)
         }
     }
 
-    private fun onMainResponse(response: Response<List<BaseHotelInfo>>) {
+    private fun onMainResponse(response: Response<List<HotelsListResponse>>) {
         if (response.isSuccessful) {
             _visibility.postValue(Visibility.HOTELS)
-            _hotels.postValue(response.body())
+            val hotels: List<BaseHotelInfo> = response.body()?.map {
+                BaseHotelInfo(
+                    id = it.id,
+                    name = it.name,
+                    address = it.address,
+                    stars = it.stars,
+                    distance = it.distance,
+                    suites = it.suites.trim(DELIMITER).split(DELIMITER)
+                )
+            } ?: listOf() //что я вообще должен тут ответить?
+            _hotels.postValue(hotels)
         } else {
             _visibility.postValue(Visibility.ERROR)
             _err.postValue(response.errorBody().toString())
