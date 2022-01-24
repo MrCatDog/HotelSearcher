@@ -12,6 +12,7 @@ import com.example.hotelsearcher.databinding.HotelFragmentBinding
 import com.example.hotelsearcher.utils.CutOffBorderTransformation
 import com.example.hotelsearcher.utils.viewModelsExt
 import com.example.hotelsearcher.main.fragments.hotel.HotelViewModel.Visibility.*
+import com.example.hotelsearcher.main.fragments.hotels_list.BaseHotelInfo
 
 const val DATA_TAG = "data"
 const val BORDER_SIZE = 1
@@ -19,7 +20,7 @@ const val BORDER_SIZE = 1
 class HotelFragment : Fragment() {
 
     private val viewModel by viewModelsExt {
-        HotelViewModel(requireArguments().getString(DATA_TAG)!!)
+        HotelViewModel(requireArguments().getParcelable(DATA_TAG)!!)
     }
 
     override fun onCreateView(
@@ -38,11 +39,11 @@ class HotelFragment : Fragment() {
                 .into(binding.imageHolder)
 
             it.apply {
-                binding.stars.rating = stars
-                binding.name.text = name
-                binding.address.text = address
-                binding.distance.text = distanceToShow
-                binding.suitesAvailability.text = suitesToShow
+                binding.stars.rating = baseHotelInfo.stars
+                binding.name.text = baseHotelInfo.name
+                binding.address.text = baseHotelInfo.address
+                binding.distance.text = baseHotelInfo.distanceToShow
+                binding.suitesAvailability.text = baseHotelInfo.suitesToShow
                 binding.longitude.text = lon
                 binding.latitude.text = lat
             }
@@ -80,11 +81,11 @@ class HotelFragment : Fragment() {
     }
 
     companion object HotelFragmentFactory {
-        fun newInstance(hotelID: String): HotelFragment {
+        fun newInstance(hotel: BaseHotelInfo): HotelFragment {
             val myFragment = HotelFragment()
             val args = Bundle()
 
-            args.putString(DATA_TAG, hotelID)
+            args.putParcelable(DATA_TAG, hotel)
 
             return myFragment.also { it.arguments = args }
         }

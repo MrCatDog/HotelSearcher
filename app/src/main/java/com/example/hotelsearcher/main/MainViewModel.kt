@@ -2,6 +2,7 @@ package com.example.hotelsearcher.main
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import com.example.hotelsearcher.main.fragments.hotels_list.BaseHotelInfo
 import com.example.hotelsearcher.utils.MutableLiveEvent
 
 class MainViewModel : ViewModel() {
@@ -10,16 +11,16 @@ class MainViewModel : ViewModel() {
     val hotelsListEvent: LiveData<Unit>
         get() = _hotelsListEvent
 
-    private val _hotelItemEvent = MutableLiveEvent<String>()
-    val hotelItemEvent: LiveData<String>
+    private val _hotelItemEvent = MutableLiveEvent<BaseHotelInfo>()
+    val hotelItemEvent: LiveData<BaseHotelInfo>
         get() = _hotelItemEvent
 
     init {
         _hotelsListEvent.setValue(Unit)
     }
 
-    fun setHotelFragment(hotelID: String) {
-        _hotelItemEvent.setValue(hotelID)
+    fun setHotelFragment(hotel: BaseHotelInfo) {
+        _hotelItemEvent.setValue(hotel)
     }
 
 }

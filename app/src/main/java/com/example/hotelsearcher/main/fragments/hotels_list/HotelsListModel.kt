@@ -1,8 +1,11 @@
 package com.example.hotelsearcher.main.fragments.hotels_list
 
-const val SUITES_SEPARATOR = ", "
-const val DELIMITER = ':'
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+const val SUITES_SEPARATOR = ", "
+
+@Parcelize
 data class BaseHotelInfo(
     val id: String,
     val name: String,
@@ -10,7 +13,7 @@ data class BaseHotelInfo(
     val stars: Float,
     val distance: Float,
     val suites: List<String>
-) {
+) : Parcelable {
     val distanceToShow
         get() = distance.toString()
     val suitesToShow

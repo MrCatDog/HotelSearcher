@@ -9,6 +9,8 @@ import retrofit2.Call
 import retrofit2.Response
 import java.util.ArrayList
 
+const val DELIMITER = ':'
+
 class HotelsListViewModel : ViewModel() {
 
     enum class Visibility {
@@ -70,7 +72,7 @@ class HotelsListViewModel : ViewModel() {
                     distance = it.distance,
                     suites = it.suites.trim(DELIMITER).split(DELIMITER)
                 )
-            } ?: listOf() //что я вообще должен тут ответить?
+            } ?: listOf() //todo что я вообще должен тут ответить?
             _hotels.postValue(hotels)
         } else {
             _visibility.postValue(Visibility.ERROR)

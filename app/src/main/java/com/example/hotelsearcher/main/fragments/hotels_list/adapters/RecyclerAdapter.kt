@@ -32,7 +32,7 @@ class RecyclerAdapter(private val listener: HotelsListFragment) :
         holder.binding.distance.text = item.distanceToShow
         holder.binding.suitesAvailability.text = item.suitesToShow
         holder.binding.root.setOnClickListener {
-            listener.onRecyclerItemClicked(item.id)
+            listener.onRecyclerItemClicked(item)
         }
     }
 

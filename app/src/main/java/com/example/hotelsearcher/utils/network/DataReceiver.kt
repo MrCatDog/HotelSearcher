@@ -1,6 +1,5 @@
 package com.example.hotelsearcher.utils.network
 
-import com.example.hotelsearcher.main.fragments.hotel.FullHotelInfo
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import kotlin.reflect.KFunction1
@@ -39,20 +38,20 @@ class DataReceiver {
 
     fun requestHotel(
         id: String,
-        onResponse: KFunction1<Response<FullHotelInfo>, Unit>,
-        onFail: KFunction2<Call<FullHotelInfo>, Throwable, Unit>
+        onResponse: KFunction1<Response<HotelResponse>, Unit>,
+        onFail: KFunction2<Call<HotelResponse>, Throwable, Unit>
     ) {
         val hotel = serverApi.getHotel(id)
 
-        hotel.enqueue(object : Callback<FullHotelInfo> {
+        hotel.enqueue(object : Callback<HotelResponse> {
 
-            override fun onFailure(call: Call<FullHotelInfo>, t: Throwable) {
+            override fun onFailure(call: Call<HotelResponse>, t: Throwable) {
                 onFail(call, t)
             }
 
             override fun onResponse(
-                call: Call<FullHotelInfo>,
-                response: Response<FullHotelInfo>
+                call: Call<HotelResponse>,
+                response: Response<HotelResponse>
             ) {
                 onResponse(response)
             }
