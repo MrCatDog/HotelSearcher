@@ -12,7 +12,6 @@ import com.example.hotelsearcher.databinding.HotelFragmentBinding
 import com.example.hotelsearcher.utils.CutOffBorderTransformation
 import com.example.hotelsearcher.utils.viewModelsExt
 import com.example.hotelsearcher.main.fragments.hotel.HotelViewModel.Visibility.*
-import com.example.hotelsearcher.main.fragments.hotels_list.BaseHotelInfo
 
 const val DATA_TAG = "data"
 const val BORDER_SIZE = 1
@@ -20,7 +19,7 @@ const val BORDER_SIZE = 1
 class HotelFragment : Fragment() {
 
     private val viewModel by viewModelsExt {
-        HotelViewModel(requireArguments().getParcelable(DATA_TAG)!!)
+        HotelViewModel(arguments?.getParcelable(DATA_TAG)!!)
     }
 
     override fun onCreateView(
@@ -78,16 +77,5 @@ class HotelFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    companion object HotelFragmentFactory {
-        fun newInstance(hotel: BaseHotelInfo): HotelFragment {
-            val myFragment = HotelFragment()
-            val args = Bundle()
-
-            args.putParcelable(DATA_TAG, hotel)
-
-            return myFragment.also { it.arguments = args }
-        }
     }
 }

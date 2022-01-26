@@ -2,12 +2,13 @@ package com.example.hotelsearcher.main
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import com.example.hotelsearcher.utils.viewModelsExt
 import com.example.hotelsearcher.databinding.MainActivityBinding
-import androidx.fragment.app.Fragment
-import com.example.hotelsearcher.main.fragments.hotel.HotelFragment
+import androidx.navigation.fragment.NavHostFragment
+import com.example.hotelsearcher.R
+import com.example.hotelsearcher.main.fragments.hotel.DATA_TAG
 import com.example.hotelsearcher.main.fragments.hotels_list.BaseHotelInfo
-import com.example.hotelsearcher.main.fragments.hotels_list.HotelsListFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,23 +23,17 @@ class MainActivity : AppCompatActivity() {
         binding = MainActivityBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+
         viewModel.hotelItemEvent.observe(this) {
-            changeFragment(HotelFragment.newInstance(it))
+            navController.navigate(
+                R.id.action_hotelsListFragment_to_hotelFragment,
+                bundleOf(DATA_TAG to it)
+            )
         }
 
-        viewModel.hotelsListEvent.observe(this) {
-            changeFragment(HotelsListFragment())
-        }
-
-    }
-
-    private fun changeFragment(newFragment: Fragment) {
-        val fTrans = supportFragmentManager.beginTransaction()
-            .replace(binding.fragment.id, newFragment)
-        if (newFragment is HotelFragment) {
-            fTrans.addToBackStack(null)
-        }
-        fTrans.commit()
     }
 
     fun setHotelFragment(hotel: BaseHotelInfo) {
