@@ -72,7 +72,7 @@ class HotelsListViewModel : ViewModel() {
                     distance = it.distance,
                     suites = it.suites.trim(DELIMITER).split(DELIMITER)
                 )
-            } ?: listOf() //todo что я вообще должен тут ответить?
+            } ?: listOf() //todo что я вообще должен тут ответить? ошибка?
             _hotels.postValue(hotels)
         } else {
             _visibility.postValue(Visibility.ERROR)

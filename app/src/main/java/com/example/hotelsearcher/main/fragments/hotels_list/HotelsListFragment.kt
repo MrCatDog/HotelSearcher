@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.hotelsearcher.R
 import com.example.hotelsearcher.databinding.HotelsListFragmentBinding
-import com.example.hotelsearcher.main.MainActivity
+import com.example.hotelsearcher.main.fragments.hotel.HOTEL_BASE_INFO_TAG
 import com.example.hotelsearcher.main.fragments.hotels_list.adapters.RecyclerAdapter
 import com.example.hotelsearcher.utils.viewModelsExt
 import com.example.hotelsearcher.main.fragments.hotels_list.HotelsListViewModel.Visibility.*
@@ -73,6 +76,9 @@ class HotelsListFragment : Fragment() {
     }
 
     fun onRecyclerItemClicked(hotel: BaseHotelInfo) {
-        (requireActivity() as MainActivity).setHotelFragment(hotel)
+        findNavController().navigate(
+            R.id.action_hotelsListFragment_to_hotelFragment,
+            bundleOf(HOTEL_BASE_INFO_TAG to hotel)
+        )
     }
 }

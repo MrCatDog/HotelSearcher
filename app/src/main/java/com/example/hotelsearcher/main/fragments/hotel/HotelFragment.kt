@@ -13,13 +13,13 @@ import com.example.hotelsearcher.utils.CutOffBorderTransformation
 import com.example.hotelsearcher.utils.viewModelsExt
 import com.example.hotelsearcher.main.fragments.hotel.HotelViewModel.Visibility.*
 
-const val DATA_TAG = "data"
 const val BORDER_SIZE = 1
+const val HOTEL_BASE_INFO_TAG = "data"
 
 class HotelFragment : Fragment() {
 
     private val viewModel by viewModelsExt {
-        HotelViewModel(arguments?.getParcelable(DATA_TAG)!!)
+        HotelViewModel(arguments?.getParcelable(HOTEL_BASE_INFO_TAG)!!)
     }
 
     override fun onCreateView(
