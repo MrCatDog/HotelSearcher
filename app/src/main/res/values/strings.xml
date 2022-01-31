@@ -8,4 +8,5 @@
     <string name="additional_info_latitude_precurse">Latitude:</string>
     <string name="album_image_desc">Album cover</string>
     <string name="main_try_again_btn_text">Try again</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>

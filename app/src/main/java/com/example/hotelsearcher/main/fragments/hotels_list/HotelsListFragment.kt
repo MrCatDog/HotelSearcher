@@ -37,7 +37,7 @@ class HotelsListFragment : Fragment() {
         }
 
         viewModel.err.observe(viewLifecycleOwner) {
-            binding.errorText.text = it
+            binding.errorText.text = it ?: getString(R.string.unknown_error)
         }
 
         viewModel.visibility.observe(viewLifecycleOwner) {

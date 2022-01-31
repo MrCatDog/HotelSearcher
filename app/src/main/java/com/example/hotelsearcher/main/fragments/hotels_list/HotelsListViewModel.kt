@@ -29,8 +29,8 @@ class HotelsListViewModel : ViewModel() {
     val visibility: LiveData<Visibility>
         get() = _visibility
 
-    private val _err = MutableLiveData<String>()
-    val err: LiveData<String>
+    private val _err = MutableLiveData<String?>()
+    val err: LiveData<String?>
         get() = _err
 
     init {
@@ -55,6 +55,7 @@ class HotelsListViewModel : ViewModel() {
 
     private fun onMainFailure(call: Call<List<HotelsListResponse>>, e: Throwable) {
         if (!call.isCanceled) {
+            setError(e.message)
             _err.postValue(e.message)
             _visibility.postValue(Visibility.ERROR)
         }
@@ -62,8 +63,7 @@ class HotelsListViewModel : ViewModel() {
 
     private fun onMainResponse(response: Response<List<HotelsListResponse>>) {
         if (response.isSuccessful) {
-            _visibility.postValue(Visibility.HOTELS)
-            val hotels: List<BaseHotelInfo> = response.body()?.map {
+            val hotels: List<BaseHotelInfo>? = response.body()?.map {
                 BaseHotelInfo(
                     id = it.id,
                     name = it.name,
@@ -72,12 +72,28 @@ class HotelsListViewModel : ViewModel() {
                     distance = it.distance,
                     suites = it.suites.trim(DELIMITER).split(DELIMITER)
                 )
-            } ?: listOf() //todo что я вообще должен тут ответить? ошибка?
-            _hotels.postValue(hotels)
+            }
+            if (hotels != null) {
+                // ошибка на hotels (Expected non-nullable value), но всё компилится. Ошибка среды?
+                _hotels.postValue(hotels)
+                _visibility.postValue(Visibility.HOTELS)
+            } else {
+                setError(response.errorBody().toString())
+            }
+//Вариант без ошибки и, вроде как, более Kotlin-style, хотя читаемость упала, WTF вызывет.
+//apply заменяет let, подробнее: https://dev.to/vlazdra/a-decompiled-story-of-kotlin-let-and-run-4k83
+//            hotels?.apply {
+//                _hotels.postValue(this)
+//                _visibility.postValue(Visibility.HOTELS)
+//            } ?: setError(response.errorBody().toString())
         } else {
-            _visibility.postValue(Visibility.ERROR)
-            _err.postValue(response.errorBody().toString())
+            setError(response.errorBody().toString())
         }
+    }
+
+    private fun setError(text: String?) {
+        _err.postValue(text)
+        _visibility.postValue(Visibility.ERROR)
     }
 
     fun tryAgainBtnClicked() {

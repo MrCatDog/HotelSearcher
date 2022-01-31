@@ -25,8 +25,8 @@ class HotelViewModel(private val baseHotelInfo: BaseHotelInfo) : ViewModel() {
     val hotel: LiveData<FullHotelInfo>
         get() = _hotel
 
-    private val _err = MutableLiveData<String>()
-    val err: LiveData<String>
+    private val _err = MutableLiveData<String?>()
+    val err: LiveData<String?>
         get() = _err
 
     private val _visibility = MutableLiveData<Visibility>()
@@ -48,27 +48,34 @@ class HotelViewModel(private val baseHotelInfo: BaseHotelInfo) : ViewModel() {
 
     private fun onHotelResponse(response: Response<HotelResponse>) {
         if (response.isSuccessful) {
-            val hotelResponse = response.body()!! //todo
-            _hotel.postValue(
-                FullHotelInfo(
-                    baseHotelInfo,
-                    hotelResponse.lon,
-                    hotelResponse.lat,
-                    URL_IMG + hotelResponse.url
+            val hotelResponse = response.body()
+            if(hotelResponse != null) {
+                _hotel.postValue(
+                    FullHotelInfo(
+                        baseHotelInfo,
+                        hotelResponse.lon,
+                        hotelResponse.lat,
+                        URL_IMG + hotelResponse.url
+                    )
                 )
-            )
-            _visibility.postValue(Visibility.HOTEL)
+                _visibility.postValue(Visibility.HOTEL)
+            } else {
+                setError(response.errorBody().toString())
+            }
         } else {
-            _visibility.postValue(Visibility.ERROR)
-            _err.postValue(response.errorBody().toString())
+            setError(response.errorBody().toString())
         }
     }
 
     private fun onHotelFailure(call: Call<HotelResponse>, e: Throwable) {
         if (!call.isCanceled) {
-            _err.postValue(e.message)
-            _visibility.postValue(Visibility.ERROR)
+            setError(e.message)
         }
+    }
+
+    private fun setError(text : String?) {
+        _err.postValue(text)
+        _visibility.postValue(Visibility.ERROR)
     }
 
     fun tryAgainBtnClicked() {
