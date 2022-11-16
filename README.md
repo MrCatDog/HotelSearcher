@@ -18,5 +18,5 @@ Retrofit, Glide, Jetpack Navigation, MVVM, LiveData, ViewBinding.
 # Download
 You can use simple `git clone`:
 ```
-git clone https://github.com/MrCatDog/Users
+git clone https://github.com/MrCatDog/HotelSearcher
 ```
